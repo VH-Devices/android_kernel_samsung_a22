@@ -82,6 +82,7 @@ modules.builtin
 #
 gcc/
 clang/
+a22/
 
 #
 # Generated include files
