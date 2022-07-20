@@ -996,7 +996,7 @@ void mtk_vcodec_dec_release(struct mtk_vcodec_ctx *ctx)
 				vdec_decode_unprepare(ctx, i);
 			/* user killed when waiting lock, do not unlock*/
 			if (ctx->hw_locked[i] == -1) {
-				mtk_vcodec_dec_clock_off(&ctx->dev->pm, i);
+				mtk_vcodec_dec_clock_off(&ctx->dev->pm);
 				mtk_vdec_pmqos_end_frame(ctx, i);
 			}
 		}
