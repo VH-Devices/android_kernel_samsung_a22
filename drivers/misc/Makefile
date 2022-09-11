@@ -48,6 +48,7 @@ obj-$(CONFIG_VMWARE_VMCI)	+= vmw_vmci/
 obj-$(CONFIG_LATTICE_ECP3_CONFIG)	+= lattice-ecp3-config.o
 obj-$(CONFIG_SRAM)		+= sram.o
 obj-$(CONFIG_SRAM_EXEC)		+= sram-exec.o
+obj-$(CONFIG_ACCESS_RAMOOPS)	+= access_ramoops.o
 obj-y				+= mic/
 obj-$(CONFIG_GENWQE)		+= genwqe/
 obj-$(CONFIG_ECHO)		+= echo/
@@ -59,6 +60,7 @@ obj-$(CONFIG_PCI_ENDPOINT_TEST)	+= pci_endpoint_test.o
 
 obj-$(CONFIG_UID_SYS_STATS)	+= uid_sys_stats.o
 obj-$(CONFIG_MEMORY_STATE_TIME)	+= memory_state_time.o
+obj-$(CONFIG_MEDIATEK_SOLUTION) += mediatek/
 
 lkdtm-$(CONFIG_LKDTM)		+= lkdtm_core.o
 lkdtm-$(CONFIG_LKDTM)		+= lkdtm_bugs.o
@@ -77,3 +79,17 @@ OBJCOPYFLAGS_lkdtm_rodata_objcopy.o := \
 targets += lkdtm_rodata.o lkdtm_rodata_objcopy.o
 $(obj)/lkdtm_rodata_objcopy.o: $(obj)/lkdtm_rodata.o FORCE
 	$(call if_changed,objcopy)
+
+obj-$(CONFIG_DEV_RIL_BRIDGE) += dev_ril_bridge.o
+
+# TEEGRIS kernel driver
+ifneq (,$(filter $(CONFIG_MTK_PLATFORM), "mt6739"))
+# 4.1, R OS upgrade
+ccflags-$(CONFIG_TZDEV) += -I$(srctree)/drivers/misc/tzdev/4.1/include
+obj-$(CONFIG_TZDEV)		+= tzdev/4.1/
+else
+# 4.2
+ccflags-$(CONFIG_TZDEV) += -I$(srctree)/drivers/misc/tzdev/include
+obj-$(CONFIG_TZDEV)		+= tzdev/
+endif
+obj-$(CONFIG_SAMSUNG_TUI)	+= tui/

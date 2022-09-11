@@ -24,6 +24,7 @@
 #include <linux/list_lru.h>
 #include <uapi/linux/android/binder.h>
 
+extern int system_server_pid_sa;
 extern struct list_lru binder_alloc_lru;
 struct binder_transaction;
 

@@ -9,6 +9,7 @@
 #include <linux/scatterlist.h>
 
 #include <trace/events/block.h>
+#include <mt-plat/mtk_blocktag.h> /* MTK PATCH */
 
 #include "blk.h"
 
@@ -407,9 +408,13 @@ static int __blk_bios_map_sg(struct request_queue *q, struct bio *bio,
 	int cluster = blk_queue_cluster(q), nsegs = 0;
 
 	for_each_bio(bio)
-		bio_for_each_segment(bvec, bio, iter)
+		bio_for_each_segment(bvec, bio, iter) {
 			__blk_segment_map_sg(q, &bvec, sglist, &bvprv, sg,
 					     &nsegs, &cluster);
+#ifdef CONFIG_MTK_BLOCK_TAG
+			mtk_btag_pidlog_map_sg(q, bio, &bvec);
+#endif
+		}
 
 	return nsegs;
 }
@@ -773,6 +778,7 @@ static struct request *attempt_merge(struct request_queue *q,
 	 * 'next' is going away, so update stats accordingly
 	 */
 	blk_account_io_merge(next);
+	blk_queue_io_vol_merge(q, next->cmd_flags, -1, 0);
 
 	req->ioprio = ioprio_best(req->ioprio, next->ioprio);
 	if (blk_rq_cpu_valid(next))

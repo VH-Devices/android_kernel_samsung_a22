@@ -1453,6 +1453,10 @@ struct ext4_sb_info {
 	unsigned long s_ext_extents;
 #endif
 
+	/* @fs.sec -- 4D0BB70301E0C7B49CF3E227862E1846 -- */
+	/* Reserved inodes count */
+	s64 s_r_inodes_count;
+
 	/* for buddy allocator */
 	struct ext4_group_info ** __rcu *s_group_info;
 	struct inode *s_buddy_cache;
@@ -1948,6 +1952,11 @@ static inline int ext4_forced_shutdown(struct ext4_sb_info *sbi)
  */
 #define EXT4_DEF_MIN_BATCH_TIME	0
 #define EXT4_DEF_MAX_BATCH_TIME	15000 /* 15ms */
+
+/*
+ * Default reserved inode count
+ */
+#define EXT4_DEF_RESERVE_INODE 8192
 
 /*
  * Minimum number of groups in a flexgroup before we separate out
@@ -2910,6 +2919,12 @@ static inline int ext4_has_metadata_csum(struct super_block *sb)
 	return ext4_has_feature_metadata_csum(sb) &&
 	       (EXT4_SB(sb)->s_chksum_driver != NULL);
 }
+
+extern void print_iloc_info(struct super_block *sb, struct ext4_iloc iloc);
+extern void print_bh(struct super_block *sb,
+		struct buffer_head *bh, int start, int len);
+extern void print_block_data(struct super_block *sb, sector_t blocknr,
+		unsigned char *data_to_dump, int start, int len);
 
 static inline int ext4_has_group_desc_csum(struct super_block *sb)
 {
